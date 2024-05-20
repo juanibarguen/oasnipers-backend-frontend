@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Website.com</title>
+  </head>
+  <body>
+    <button id="checkout" data-price="50.00" data-name="Servicio Ungated">Ungated!</button>
+
+
+<script>
+    const checkout = document.getElementById("checkout");
+    checkout.addEventListener("click", async () => {
+      const price = checkout.getAttribute("data-price");
+      const name = checkout.getAttribute("data-name");
+
+      const response = await fetch("/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ price, name })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        window.location.href = data.links.find(link => link.rel === 'approve').href;
+      } else {
+        console.error("Error creating order:", data);
+      }
+    });
+  </script>
+
+
+
+  </body>
+</html>

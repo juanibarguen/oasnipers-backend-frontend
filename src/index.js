@@ -1,20 +1,22 @@
-import express from "express";
-import morgan from "morgan";
-import cors from "cors";
-import path from "path";
-import { PORT } from "./config.js";
-
-import paymentRoutes from "./routes/payment.routes.js";
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import path from 'path';
+import paymentRoutes from './routes/payment.routes.js';
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(cors());
-app.use(morgan("dev"));
+app.use(express.json()); // Middleware para manejar JSON
+app.use(express.urlencoded({ extended: true })); // Middleware para manejar datos URL-encoded
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'src/public')));
 
 app.use(paymentRoutes);
 
-app.use(express.static(path.resolve("./src/public")));
-
-app.listen(PORT);
-console.log(`Server on port http://localhost:${PORT}`);
-console.log(`environment: ${process.env.NODE_ENV}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

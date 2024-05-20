@@ -4,14 +4,22 @@ import axios from 'axios'
 
 export const createOrder = async (req, res) => {
     try {
+
+      const { price, name } = req.body;
+
+      if (!price || !name) {
+        return res.status(400).json({ message: "Price and name are required" });
+      }
+
       const order = {
         intent: "CAPTURE",
         purchase_units: [
           {
             amount: {
               currency_code: "USD",
-              value: "105.70",
+              value: price,
             },
+            description: name,
           },
         ],
         application_context: {
@@ -44,7 +52,7 @@ export const createOrder = async (req, res) => {
         }
       );
   
-      console.log('TOKEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEN:                 '+access_token);
+      console.log(access_token);
   
       // make a request
       const response = await axios.post(
